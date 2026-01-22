@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이세계길드 뽀모도로</title>
+    <style>
+        @font-face {
+            font-family: 'MaplestoryOTFBold';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/MaplestoryOTFBold.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'MaplestoryOTFBold', sans-serif;
+            background-image: url('./assets/images/dungeon_bg.jpg');
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: #0f0f1e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 46, 0.75);
+            transition: background 0.5s ease;
+            z-index: 0;
+        }
+
+        body.focus-mode::before {
+            background: rgba(26, 26, 46, 0.85);
+        }
+
+        body.break-mode::before {
+            background: rgba(26, 26, 46, 0.4);
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .guild-logo {
+            font-size: 14px;
+            color: #ffd700;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .title {
+            font-size: 16px;
+            color: #a0a0a0;
+            margin-bottom: 24px;
+        }
+
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .mode-tab {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'MaplestoryOTFBold', sans-serif;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+
+        .mode-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mode-tab.active {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+        }
+
+        .mode-tab.active.break {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .mode-tab.active.long-break {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            box-shadow: 0 4px 15px rgba(96, 165, 250, 0.4);
+        }
+
+        .timer-display {
+            margin-bottom: 32px;
+        }
+
+        .time {
+            font-size: 80px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-family: 'MaplestoryOTFBold', sans-serif;
+            font-weight: normal;
+            transition: all 0.3s ease;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: #1a1a2e;
+            min-width: 120px;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-start.running {
+            background: linear-gradient(135deg, #ff6b6b 0%, #e94560 100%);
+            color: #fff;
+        }
+
+        .btn-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #ccc;
+        }
+
+        .session-count {
+            margin-top: 32px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .session-count span {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        /* 진행바 */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-fill.break {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+        }
+
+        .progress-fill.long-break {
+            background: linear-gradient(90deg, #60a5fa, #3b82f6);
+        }
+
+        /* 설정 모달 */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
+        .settings-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .settings-title {
+            font-size: 20px;
+            color: #ffd700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 28px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 8px;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'MaplestoryOTFBold', sans-serif;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: #ffd700;
+        }
+
+        .setting-radio-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .save-settings-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'MaplestoryOTFBold', sans-serif;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .save-settings-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="guild-logo">⚔️ 이세계길드</div>
+        <div class="title">던전 공략 타이머</div>
+
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="pomodoro" data-time="25">🗡️ 집중</button>
+            <button class="mode-tab" data-mode="short" data-time="5">☕ 짧은 휴식</button>
+            <button class="mode-tab" data-mode="long" data-time="15">🏕️ 긴 휴식</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <div class="timer-display">
+            <div class="time" id="timer">25:00</div>
+            <div class="status-text" id="status">훈련을 시작하세요</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-icon" id="resetBtn" title="리셋">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                </svg>
+            </button>
+            <button class="btn btn-start" id="startBtn">훈련 시작</button>
+            <button class="btn-icon" id="settingsBtn" title="설정">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="session-count">
+            오늘 완료한 훈련: <span id="sessions">0</span>회
+        </div>
+    </div>
+
+    <!-- 설정 모달 -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <div class="settings-title">⚙️ 설정</div>
+                <button class="close-btn" id="closeSettings">&times;</button>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">🗡️ 훈련 시간 (분)</label>
+                <input type="number" class="setting-input" id="focusTime" min="1" max="120" value="25">
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">☕ 짧은 휴식 시간 (분)</label>
+                <input type="number" class="setting-input" id="shortBreakTime" min="1" max="60" value="5">
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">🏕️ 긴 휴식 시간 (분)</label>
+                <input type="number" class="setting-input" id="longBreakTime" min="1" max="60" value="15">
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">⏰ 타이머가 0이 되면</label>
+                <div class="setting-radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="stopAtZero" name="timerBehavior" value="stop" checked>
+                        <label for="stopAtZero">0에서 멈춤</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="continueNegative" name="timerBehavior" value="continue">
+                        <label for="continueNegative">계속 진행 (마이너스)</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="save-settings-btn" id="saveSettings">저장</button>
+        </div>
+    </div>
+
+    <script>
+        // 설정 관리
+        let settings = {
+            focusTime: 25,
+            shortBreakTime: 5,
+            longBreakTime: 15,
+            stopAtZero: true
+        };
+
+        // localStorage에서 설정 불러오기
+        function loadSettings() {
+            const saved = localStorage.getItem('pomodoroSettings');
+            if (saved) {
+                settings = { ...settings, ...JSON.parse(saved) };
+            }
+            updateSettingsUI();
+        }
+
+        // 설정 UI 업데이트
+        function updateSettingsUI() {
+            document.getElementById('focusTime').value = settings.focusTime;
+            document.getElementById('shortBreakTime').value = settings.shortBreakTime;
+            document.getElementById('longBreakTime').value = settings.longBreakTime;
+            if (settings.stopAtZero) {
+                document.getElementById('stopAtZero').checked = true;
+            } else {
+                document.getElementById('continueNegative').checked = true;
+            }
+        }
+
+        // 상태 관리
+        let timeLeft = settings.focusTime * 60;
+        let totalTime = settings.focusTime * 60;
+        let isRunning = false;
+        let interval = null;
+        let currentMode = 'pomodoro';
+        let sessions = 0;
+
+        // DOM 요소
+        const timerEl = document.getElementById('timer');
+        const statusEl = document.getElementById('status');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const progressEl = document.getElementById('progress');
+        const sessionsEl = document.getElementById('sessions');
+        const modeTabs = document.querySelectorAll('.mode-tab');
+        const settingsModal = document.getElementById('settingsModal');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettings');
+        const saveSettingsBtn = document.getElementById('saveSettings');
+
+        // 모드별 시간 가져오기
+        function getTimeForMode(mode) {
+            if (mode === 'pomodoro') return settings.focusTime;
+            if (mode === 'short') return settings.shortBreakTime;
+            if (mode === 'long') return settings.longBreakTime;
+            return settings.focusTime;
+        }
+
+        // 시간 포맷
+        function formatTime(seconds) {
+            const isNegative = seconds < 0;
+            const absSeconds = Math.abs(seconds);
+            const mins = Math.floor(absSeconds / 60);
+            const secs = absSeconds % 60;
+            const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            return isNegative ? `-${timeStr}` : timeStr;
+        }
+
+        // 진행바 업데이트
+        function updateProgress() {
+            const percent = ((totalTime - timeLeft) / totalTime) * 100;
+            progressEl.style.width = `${percent}%`;
+        }
+
+        // 상태 텍스트 업데이트
+        function updateStatus() {
+            if (isRunning) {
+                if (currentMode === 'pomodoro') {
+                    statusEl.textContent = '🔥 훈련 진행 중...';
+                } else {
+                    statusEl.textContent = '😌 휴식 중...';
+                }
+            } else if (timeLeft === 0) {
+                if (currentMode === 'pomodoro') {
+                    statusEl.textContent = '✅ 훈련 완료!';
+                } else {
+                    statusEl.textContent = '✅ 휴식 완료!';
+                }
+            } else {
+                if (currentMode === 'pomodoro') {
+                    statusEl.textContent = '훈련을 시작하세요';
+                } else {
+                    statusEl.textContent = '휴식을 시작하세요';
+                }
+            }
+        }
+
+        // 타이머 업데이트
+        function updateTimer() {
+            timerEl.textContent = formatTime(timeLeft);
+            updateProgress();
+            updateStatus();
+        }
+
+        // 타이머 시작/정지
+        function toggleTimer() {
+            if (isRunning) {
+                clearInterval(interval);
+                isRunning = false;
+                if (currentMode === 'pomodoro') {
+                    startBtn.textContent = '훈련 재개';
+                } else {
+                    startBtn.textContent = '휴식 재개';
+                }
+                startBtn.classList.remove('running');
+            } else {
+                isRunning = true;
+                startBtn.textContent = '일시 중단';
+                startBtn.classList.add('running');
+
+                interval = setInterval(() => {
+                    timeLeft--;
+                    updateTimer();
+
+                    if (timeLeft === 0) {
+                        // 알림음
+                        playSound();
+
+                        // 세션 카운트
+                        if (currentMode === 'pomodoro') {
+                            sessions++;
+                            sessionsEl.textContent = sessions;
+                        }
+
+                        updateStatus();
+
+                        // 0에서 멈춤 설정이면 타이머 정지
+                        if (settings.stopAtZero) {
+                            clearInterval(interval);
+                            isRunning = false;
+                            if (currentMode === 'pomodoro') {
+                                startBtn.textContent = '훈련 시작';
+                            } else {
+                                startBtn.textContent = '휴식 시작';
+                            }
+                            startBtn.classList.remove('running');
+                        }
+                    }
+                }, 1000);
+            }
+            updateStatus();
+        }
+
+        // 리셋
+        function resetTimer() {
+            clearInterval(interval);
+            isRunning = false;
+            timeLeft = getTimeForMode(currentMode) * 60;
+            totalTime = timeLeft;
+            if (currentMode === 'pomodoro') {
+                startBtn.textContent = '훈련 시작';
+            } else {
+                startBtn.textContent = '휴식 시작';
+            }
+            startBtn.classList.remove('running');
+            updateTimer();
+        }
+
+        // 모드 변경
+        function changeMode(tab) {
+            clearInterval(interval);
+            isRunning = false;
+
+            modeTabs.forEach(t => {
+                t.classList.remove('active', 'break', 'long-break');
+            });
+            tab.classList.add('active');
+
+            currentMode = tab.dataset.mode;
+
+            // body 클래스 변경 (배경 밝기 조절)
+            if (currentMode === 'pomodoro') {
+                document.body.classList.remove('break-mode');
+                document.body.classList.add('focus-mode');
+            } else {
+                document.body.classList.remove('focus-mode');
+                document.body.classList.add('break-mode');
+            }
+
+            // 모드별 스타일
+            if (currentMode === 'short') {
+                tab.classList.add('break');
+                progressEl.classList.add('break');
+                progressEl.classList.remove('long-break');
+            } else if (currentMode === 'long') {
+                tab.classList.add('long-break');
+                progressEl.classList.add('long-break');
+                progressEl.classList.remove('break');
+            } else {
+                progressEl.classList.remove('break', 'long-break');
+            }
+
+            timeLeft = getTimeForMode(currentMode) * 60;
+            totalTime = timeLeft;
+            if (currentMode === 'pomodoro') {
+                startBtn.textContent = '훈련 시작';
+            } else {
+                startBtn.textContent = '휴식 시작';
+            }
+            startBtn.classList.remove('running');
+            updateTimer();
+        }
+
+        // 알림음
+        function playSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        // 설정 모달 열기
+        function openSettings() {
+            settingsModal.classList.add('active');
+        }
+
+        // 설정 모달 닫기
+        function closeSettings() {
+            settingsModal.classList.remove('active');
+        }
+
+        // 설정 저장
+        function saveSettings() {
+            settings.focusTime = parseInt(document.getElementById('focusTime').value);
+            settings.shortBreakTime = parseInt(document.getElementById('shortBreakTime').value);
+            settings.longBreakTime = parseInt(document.getElementById('longBreakTime').value);
+            settings.stopAtZero = document.getElementById('stopAtZero').checked;
+
+            // localStorage에 저장
+            localStorage.setItem('pomodoroSettings', JSON.stringify(settings));
+
+            // 모드 탭 업데이트
+            modeTabs[0].dataset.time = settings.focusTime;
+            modeTabs[1].dataset.time = settings.shortBreakTime;
+            modeTabs[2].dataset.time = settings.longBreakTime;
+
+            // 현재 타이머가 실행 중이 아니면 시간 리셋
+            if (!isRunning) {
+                timeLeft = getTimeForMode(currentMode) * 60;
+                totalTime = timeLeft;
+                updateTimer();
+            }
+
+            closeSettings();
+        }
+
+        // 이벤트 리스너
+        startBtn.addEventListener('click', toggleTimer);
+        resetBtn.addEventListener('click', resetTimer);
+        settingsBtn.addEventListener('click', openSettings);
+        closeSettingsBtn.addEventListener('click', closeSettings);
+        saveSettingsBtn.addEventListener('click', saveSettings);
+        modeTabs.forEach(tab => {
+            tab.addEventListener('click', () => changeMode(tab));
+        });
+
+        // 모달 외부 클릭 시 닫기
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                closeSettings();
+            }
+        });
+
+        // 초기화
+        loadSettings();
+        document.body.classList.add('focus-mode');
+
+        // 설정에서 로드한 시간으로 초기화
+        timeLeft = getTimeForMode(currentMode) * 60;
+        totalTime = timeLeft;
+
+        // 모드 탭의 data-time 속성 업데이트
+        modeTabs[0].dataset.time = settings.focusTime;
+        modeTabs[1].dataset.time = settings.shortBreakTime;
+        modeTabs[2].dataset.time = settings.longBreakTime;
+
+        updateTimer();
+    </script>
+</body>
+
+</html>
