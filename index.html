@@ -77,10 +77,11 @@
         }
 
         .guild-logo {
-            font-size: 14px;
+            font-size: 24px;
             color: #ffd700;
-            margin-bottom: 8px;
-            letter-spacing: 2px;
+            margin-bottom: 12px;
+            letter-spacing: 3px;
+            font-weight: bold;
         }
 
         .title {
@@ -259,9 +260,11 @@
         .settings-content {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             border-radius: 16px;
-            padding: 32px;
-            max-width: 400px;
+            padding: 20px;
+            max-width: 360px;
             width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             border: 2px solid rgba(255, 215, 0, 0.3);
         }
@@ -270,11 +273,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .settings-title {
-            font-size: 20px;
+            font-size: 18px;
             color: #ffd700;
         }
 
@@ -295,24 +298,24 @@
         }
 
         .setting-group {
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
 
         .setting-label {
             display: block;
-            font-size: 14px;
+            font-size: 13px;
             color: #ccc;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .setting-input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             color: #fff;
-            font-size: 14px;
+            font-size: 13px;
             font-family: 'MaplestoryOTFBold', sans-serif;
         }
 
@@ -323,14 +326,14 @@
 
         .setting-radio-group {
             display: flex;
-            gap: 16px;
-            margin-top: 8px;
+            gap: 12px;
+            margin-top: 6px;
         }
 
         .radio-option {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             cursor: pointer;
         }
 
@@ -341,20 +344,20 @@
         .radio-option label {
             cursor: pointer;
             color: #ccc;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .save-settings-btn {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
             color: #1a1a2e;
             border: none;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-family: 'MaplestoryOTFBold', sans-serif;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 6px;
             transition: all 0.3s ease;
         }
 
@@ -391,13 +394,8 @@
             }
 
             .guild-logo {
-                font-size: 12px;
-                margin-bottom: 6px;
-            }
-
-            .title {
-                font-size: 14px;
-                margin-bottom: 12px;
+                font-size: 18px;
+                margin-bottom: 8px;
             }
         }
     </style>
@@ -406,7 +404,6 @@
 <body>
     <div class="container">
         <div class="guild-logo">⚔️ 이세계길드</div>
-        <div class="title">던전 공략 타이머</div>
 
         <div class="mode-tabs">
             <button class="mode-tab active" data-mode="pomodoro" data-time="25">🗡️ 집중</button>
