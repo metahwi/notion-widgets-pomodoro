@@ -18,14 +18,20 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow: hidden;
+            height: 100%;
+        }
+
         body {
             font-family: 'MaplestoryOTFBold', sans-serif;
             background-image: url('./assets/images/dungeon_bg.jpg');
             background-position: center;
-            background-size: contain;
+            background-size: cover;
             background-repeat: no-repeat;
             background-color: #0f0f1e;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -56,11 +62,18 @@
 
         .container {
             text-align: center;
-            padding: 40px;
+            padding: 20px 20px 16px;
             max-width: 400px;
             width: 100%;
             position: relative;
             z-index: 1;
+            max-height: 100vh;
+            overflow-y: auto;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
         }
 
         .guild-logo {
@@ -73,14 +86,14 @@
         .title {
             font-size: 16px;
             color: #a0a0a0;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .mode-tabs {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
         .mode-tab {
@@ -116,11 +129,11 @@
         }
 
         .timer-display {
-            margin-bottom: 32px;
+            margin-bottom: 16px;
         }
 
         .time {
-            font-size: 80px;
+            font-size: clamp(48px, 12vw, 80px);
             font-weight: 700;
             letter-spacing: 4px;
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
@@ -135,16 +148,16 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
         }
 
         .btn {
-            padding: 14px 32px;
+            padding: 12px 24px;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             font-family: 'MaplestoryOTFBold', sans-serif;
             font-weight: normal;
             transition: all 0.3s ease;
@@ -167,8 +180,8 @@
         }
 
         .btn-icon {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
             border: none;
@@ -190,7 +203,7 @@
         }
 
         .session-count {
-            margin-top: 32px;
+            margin-top: 16px;
             font-size: 13px;
             color: #666;
         }
@@ -206,7 +219,7 @@
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
-            margin-bottom: 32px;
+            margin-bottom: 16px;
             overflow: hidden;
         }
 
@@ -348,6 +361,44 @@
         .save-settings-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Responsive adjustments for Notion embed */
+        @media (max-height: 600px) {
+            .container {
+                padding: 12px 16px;
+            }
+
+            .time {
+                font-size: 56px !important;
+            }
+
+            .mode-tabs {
+                margin-bottom: 12px;
+            }
+
+            .timer-display {
+                margin-bottom: 12px;
+            }
+
+            .progress-bar {
+                margin-bottom: 12px;
+            }
+
+            .session-count {
+                margin-top: 12px;
+                font-size: 12px;
+            }
+
+            .guild-logo {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+
+            .title {
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
         }
     </style>
 </head>
